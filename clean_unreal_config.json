@@ -1,0 +1,63 @@
+{
+    "projects": [
+        {
+            "path": "C:\\Users\\Factory Play\\Documents\\Unreal Projects\\CombatZone",
+            "name": "CombatZone",
+            "uproject_file": "CombatZone.uproject",
+            "monitor_auto": false,
+            "allow_clean": false,
+            "gb_limit": ""
+        },
+        {
+            "path": "C:\\Users\\Factory Play\\Documents\\Unreal Projects\\CursoDviz",
+            "name": "CursoDviz",
+            "uproject_file": "CursoDviz.uproject",
+            "monitor_auto": false,
+            "allow_clean": false,
+            "gb_limit": ""
+        },
+        {
+            "path": "C:\\Users\\Factory Play\\Documents\\Unreal Projects\\GameAnimationSample",
+            "name": "GameAnimationSample",
+            "uproject_file": "GameAnimationSample.uproject",
+            "monitor_auto": false,
+            "allow_clean": false,
+            "gb_limit": ""
+        },
+        {
+            "path": "C:\\Users\\Factory Play\\Documents\\Unreal Projects\\Modelos3D",
+            "name": "Modelos3D",
+            "uproject_file": "Modelos3D.uproject",
+            "monitor_auto": false,
+            "allow_clean": false,
+            "gb_limit": ""
+        },
+        {
+            "path": "C:\\Users\\Factory Play\\Documents\\Unreal Projects\\NPCIA",
+            "name": "NPCIA",
+            "uproject_file": "NPCIA.uproject",
+            "monitor_auto": false,
+            "allow_clean": false,
+            "gb_limit": ""
+        },
+        {
+            "path": "C:\\Users\\Factory Play\\Documents\\Unreal Projects\\SpeedChaos",
+            "name": "SpeedChaos",
+            "uproject_file": "SpeedChaos.uproject",
+            "monitor_auto": false,
+            "allow_clean": false,
+            "gb_limit": ""
+        },
+        {
+            "path": "C:\\Users\\Factory Play\\OneDrive - bee1 aprendizado colaborativo\\Template",
+            "name": "Template",
+            "uproject_file": "Template5_4.uproject",
+            "monitor_auto": true,
+            "allow_clean": true,
+            "gb_limit": "1"
+        }
+    ],
+    "settings": {
+        "auto_start_monitoring_on_launch": false
+    }
+}
