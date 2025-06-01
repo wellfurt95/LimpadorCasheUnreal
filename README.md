@@ -50,7 +50,6 @@ O programa oferece um conjunto robusto de funcionalidades para gerenciar os cach
 ## 3. Como Usar o Programa
 
 1.  **Primeira Execução e Adição de Projetos:**
-    * Parar gerar o executável basta instalar o PyInstaller usando o "pip install pyinstaller" e depois rodar o comando (dentro do diretório) "C:/Python313/python.exe -m PyInstaller --name LimpadorUnreal --noconsole --onefile --icon=CleanUnreal.ico --add-data    "CleanUnreal.ico:." app.py"
     * Ao iniciar pela primeira vez, o programa tentará carregar projetos de um arquivo de configuração. Em seguida, ele fará uma varredura na pasta padrão (`Documentos\Unreal Projects`).
     * Use o botão "**Adicionar Projeto Manualmente**" para incluir projetos que estejam em outros locais.
     * O botão "**Escanear Pasta Padrão Novamente**" permite limpar a lista atual e buscar novamente na pasta padrão.
