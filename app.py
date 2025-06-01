@@ -933,7 +933,9 @@ class App(ctk.CTk):
                 # Chamada síncrona para a lógica de limpeza para este exemplo simplificado de botão global
                 # Idealmente, isso também seria em thread para não bloquear a UI se muitos projetos.
                 # Para este botão global, talvez um feedback "Limpando projeto X..." seja suficiente.
-                space_freed, cleaned_folders, errors = clean_project_cache(project_path)
+                space_freed, cleaned_folders, errors = clean_project_cache(
+                    project_path, self
+                )
 
                 if errors:
                     msg = f"Limpeza Parcial. Liberado: {format_size(space_freed)}."
@@ -1298,7 +1300,7 @@ class App(ctk.CTk):
         #     return
 
         try:
-            space_freed, cleaned, errors = clean_project_cache(project_path)
+            space_freed, cleaned, errors = clean_project_cache(project_path, self)
             if errors:
                 msg = f"Limpeza Parcial. Liberado: {format_size(space_freed)}. Erros: {'; '.join(errors)}"
             elif cleaned:
@@ -1734,7 +1736,9 @@ class App(ctk.CTk):
                             "Cache: (Auto Limpeza...)",
                         )
 
-                        space_freed, cleaned, errors = clean_project_cache(project_path)
+                        space_freed, cleaned, errors = clean_project_cache(
+                            project_path, self
+                        )
 
                         if errors:
                             msg = f"Auto Limpeza Parcial. Liberado: {format_size(space_freed)}."
