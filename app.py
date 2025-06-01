@@ -12,7 +12,18 @@ from PIL import Image
 import sys
 import winreg
 
+if hasattr(sys, "frozen") and sys.frozen:  # Rodando como .exe (PyInstaller)
+    APPLICATION_PATH = os.path.dirname(sys.executable)
+else:  # Rodando como script .py
+    try:
+        APPLICATION_PATH = os.path.dirname(os.path.abspath(__file__))
+    except (
+        NameError
+    ):  # __file__ não é definido em alguns contextos (ex: console interativo)
+        APPLICATION_PATH = os.path.abspath(".")
+
 CONFIG_FILE_NAME = "clean_unreal_config.json"
+ABSOLUTE_CONFIG_PATH = os.path.join(APPLICATION_PATH, CONFIG_FILE_NAME)
 
 # --- Configurações Iniciais ---
 user_home_path = os.path.expanduser("~")
@@ -940,8 +951,8 @@ class App(ctk.CTk):
         loaded_interval = default_interval
 
         try:
-            if os.path.exists(CONFIG_FILE_NAME):
-                with open(CONFIG_FILE_NAME, "r") as f:
+            if os.path.exists(ABSOLUTE_CONFIG_PATH):
+                with open(ABSOLUTE_CONFIG_PATH, "r") as f:
                     data = json.load(f)
 
                 # Carrega configurações de monitoramento
@@ -1039,14 +1050,16 @@ class App(ctk.CTk):
                 )
             else:
                 self.log_message(
-                    "Arquivo de configuração não encontrado. Usando padrões.",
-                    level="INFO",
-                )
+                    f"UI: Tentando carregar dados de: {ABSOLUTE_CONFIG_PATH}",
+                    level="DEBUG",
+                )  # Log com o caminho absoluto
                 # Configurações padrão se o arquivo não existe
                 self.auto_start_monitoring_checkbox.deselect()
 
         except Exception as e:
-            self.log_message(f"Erro ao carregar dados: {e}", level="ERROR")
+            self.log_message(
+                f"Erro ao carregar dados de {ABSOLUTE_CONFIG_PATH}: {e}", level="ERROR"
+            )
             # Reseta para padrões em caso de erro grave ao carregar
             self.auto_start_monitoring_checkbox.deselect()
 
@@ -1075,7 +1088,9 @@ class App(ctk.CTk):
             self, "auto_start_monitoring_checkbox"
         ):  # Verifica se o atributo existe
             auto_start_on_launch = self.auto_start_monitoring_checkbox.get() == 1
-
+        self.log_message(
+            f"UI: Tentando salvar dados em: {ABSOLUTE_CONFIG_PATH}", level="DEBUG"
+        )  # Log com o caminho absoluto
         current_interval_str = str(self.AUTO_MONITOR_INTERVAL_SECONDS)  # Valor padrão
         if hasattr(self, "monitoring_interval_entry"):
             try:
@@ -1190,12 +1205,17 @@ class App(ctk.CTk):
                 return
 
             print(f"UI: Tentando salvar dados em: {config_file_path}")
-            with open(config_file_path, "w") as f:
+            with open(ABSOLUTE_CONFIG_PATH, "w") as f:
                 json.dump(data_to_save, f, indent=4)
             print(f"UI: Dados salvos com sucesso em {config_file_path}.")
+            self.log_message(f"UI: Dados salvos com sucesso em {ABSOLUTE_CONFIG_PATH}.")
             # print(f"DEBUG: Conteúdo que FOI salvo: {json.dumps(data_to_save, indent=4)}") # Print opcional do conteúdo salvo
         except Exception as e:
             print(f"--- ERRO FATAL AO SALVAR DADOS em '{config_file_path}': {e} ---")
+            self.log_message(
+                f"--- ERRO FATAL AO SALVAR DADOS em '{ABSOLUTE_CONFIG_PATH}': {e} ---",
+                level="CRITICAL",
+            )
             import traceback
 
             traceback.print_exc()
