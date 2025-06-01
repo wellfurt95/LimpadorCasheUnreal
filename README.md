@@ -50,35 +50,36 @@ O programa oferece um conjunto robusto de funcionalidades para gerenciar os cach
 ## 3. Como Usar o Programa
 
 1.  **Primeira Execução e Adição de Projetos:**
+    * Parar gerar o executável basta instalar o PyInstaller usando o "pip install pyinstaller" e depois rodar o comando (dentro do diretório) "C:/Python313/python.exe -m PyInstaller --name LimpadorUnreal --noconsole --onefile --icon=CleanUnreal.ico --add-data    "CleanUnreal.ico:." app.py"
     * Ao iniciar pela primeira vez, o programa tentará carregar projetos de um arquivo de configuração. Em seguida, ele fará uma varredura na pasta padrão (`Documentos\Unreal Projects`).
     * Use o botão "**Adicionar Projeto Manualmente**" para incluir projetos que estejam em outros locais.
     * O botão "**Escanear Pasta Padrão Novamente**" permite limpar a lista atual e buscar novamente na pasta padrão.
 
-2.  **Configurando Cada Projeto:**
+3.  **Configurando Cada Projeto:**
     * Para cada projeto listado na aba "Gerenciador":
         * **Monitorar Auto:** Marque esta caixa se você deseja que o monitoramento automático em segundo plano verifique este projeto.
         * **Permitir Limpeza:** Marque esta caixa para dar permissão ao programa para limpar o cache deste projeto.
         * **Limite GB (Auto):** Se "Monitorar Auto" estiver ativo, defina aqui o tamanho máximo em GB que o cache pode atingir antes que a limpeza automática seja acionada.
 
-3.  **Ações Manuais Globais:**
+4.  **Ações Manuais Globais:**
     * Clique em "**Analisar Todos os Projetos**" para calcular e exibir o tamanho atual das pastas de cache de cada projeto.
     * Clique em "**Limpar Projetos Permitidos**" para executar a limpeza do cache dos projetos que estiverem com "Permitir Limpeza" marcado e fechados no editor.
 
-4.  **Monitoramento Automático:**
+5.  **Monitoramento Automático:**
     * Na seção "Configurações de Monitoramento":
         * Marque "**Ativar monitoramento automático ao iniciar o programa**" para que o monitoramento em segundo plano comece com o aplicativo.
         * Defina o "**Intervalo (segundos):**" para a frequência das verificações.
     * O status do monitoramento será exibido.
 
-5.  **Usando a Bandeja do Sistema:**
+6.  **Usando a Bandeja do Sistema:**
     * Ao clicar no "X" da janela principal, ela será minimizada para a bandeja.
     * **Duplo clique** no ícone da bandeja restaura a janela.
     * **Clique com o botão direito** no ícone para: `Abrir Limpador`, `Alternar Monitoramento` ou `Fechar Limpador`.
 
-6.  **Visualizando Logs:**
+7.  **Visualizando Logs:**
     * Acesse a aba "**Logs**" para ver um histórico das ações do programa.
 
-7.  **Iniciando com o Windows:**
+8.  **Iniciando com o Windows:**
     * Marque a opção "**Iniciar com o Windows**" para que o programa seja executado automaticamente ao ligar o PC.
 
 ## 4. Arquivo de Configuração (`clean_unreal_config.json`)
