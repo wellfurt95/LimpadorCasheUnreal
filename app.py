@@ -157,7 +157,7 @@ def calculate_project_cache_size(project_path):
     return total_cache_size
 
 
-def clean_project_cache(project_path):
+def clean_project_cache(project_path, app_instance):
     """Deleta as pastas de cache definidas para um projeto."""
     # IMPORTANTE: Adicionar verificação se o projeto está aberto ANTES de deletar!
     # Esta é uma implementação básica, SEM essa verificação ainda.
@@ -167,24 +167,44 @@ def clean_project_cache(project_path):
     errors = []
 
     print(f"Backend: Iniciando limpeza para {project_path}...")
+    app_instance.log_message(
+        f"Backend: Iniciando limpeza para {project_path}...",
+        level="WARNING",
+    )
     for subfolder_to_clean in CACHE_SUBFOLDERS_TO_CLEAN:
         full_path_to_clean = os.path.join(project_path, subfolder_to_clean)
         if os.path.exists(full_path_to_clean) and os.path.isdir(full_path_to_clean):
             print(f"Backend: Tentando deletar {full_path_to_clean}...")
+            app_instance.log_message(
+                f"Backend: Tentando deletar {full_path_to_clean}...",
+                level="WARNING",
+            )
             try:
                 # Calcula o tamanho antes de deletar para reportar o espaço liberado
                 folder_size = get_folder_size(full_path_to_clean)
                 shutil.rmtree(full_path_to_clean)
                 print(f"Backend: Deletado com sucesso: {full_path_to_clean}")
+                app_instance.log_message(
+                    f"Backend: Deletado com sucesso: {full_path_to_clean}",
+                    level="WARNING",
+                )
                 space_freed_total += folder_size
                 cleaned_folders.append(subfolder_to_clean)
             except OSError as e:
                 error_msg = f"Erro ao deletar {full_path_to_clean}: {e}"
+                app_instance.log_message(
+                    f"Backend: {error_msg}",
+                    level="ERROR",
+                )
                 print(f"Backend: {error_msg}")
                 errors.append(error_msg)
         else:
             print(
                 f"Backend: Pasta não encontrada para limpeza ou não é um diretório: {full_path_to_clean}"
+            )
+            app_instance.log_message(
+                f"Backend: Pasta não encontrada para limpeza ou não é um diretório: {full_path_to_clean}",
+                level="WARNING",
             )
 
     return space_freed_total, cleaned_folders, errors
