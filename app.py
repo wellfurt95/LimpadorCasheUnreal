@@ -820,6 +820,99 @@ class App(ctk.CTk):
         # if self.settings.get("start_minimized_to_tray", False): # Exemplo
         #     self.hide_to_tray()
 
+    def remove_project_entry(self, project_info_to_remove):
+        """
+        Remove uma entrada de projeto da interface, da lista interna de widgets
+        e persiste a remoção salvando os dados.
+        """
+        path_to_remove = project_info_to_remove.get("path")
+        name_to_remove = project_info_to_remove.get("name", "NomeDesconhecido")
+
+        if not path_to_remove:
+            self.log_message(
+                "REMOVE_PROJECT: Tentativa de remover projeto sem um 'path' válido nos dados fornecidos.",
+                level="ERROR",
+            )
+            return
+
+        # Garante que estamos comparando caminhos normalizados
+        normalized_path_to_remove = os.path.normpath(path_to_remove)
+
+        self.log_message(
+            f"REMOVE_PROJECT: Solicitação para remover projeto '{name_to_remove}' (Path Normalizado: {normalized_path_to_remove})",
+            level="INFO",
+        )
+
+        widget_info_found = None
+        index_to_remove_from_list = -1
+
+        for i, widget_info in enumerate(self.project_widgets):
+            # Acessa o 'path' dentro de 'data' e normaliza para comparação
+            current_project_path = widget_info.get("data", {}).get("path")
+            if (
+                current_project_path
+                and os.path.normpath(current_project_path) == normalized_path_to_remove
+            ):
+                widget_info_found = widget_info
+                index_to_remove_from_list = i
+                break
+
+        if widget_info_found and index_to_remove_from_list != -1:
+            project_frame_to_destroy = widget_info_found.get("frame")
+
+            if (
+                project_frame_to_destroy
+                and hasattr(project_frame_to_destroy, "winfo_exists")
+                and project_frame_to_destroy.winfo_exists()
+            ):
+                project_frame_to_destroy.destroy()
+                self.log_message(
+                    f"REMOVE_PROJECT: Frame da UI para '{name_to_remove}' destruído.",
+                    level="DEBUG",
+                )
+            else:
+                self.log_message(
+                    f"REMOVE_PROJECT: Frame da UI para '{name_to_remove}' não encontrado ou já destruído.",
+                    level="WARNING",
+                )
+
+            # Remover da lista de widgets
+            del self.project_widgets[index_to_remove_from_list]
+
+            # Remover do conjunto de caminhos exibidos
+            if normalized_path_to_remove in self.displayed_project_paths:
+                self.displayed_project_paths.remove(normalized_path_to_remove)
+                self.log_message(
+                    f"REMOVE_PROJECT: Path '{normalized_path_to_remove}' removido de displayed_project_paths.",
+                    level="TRACE",
+                )
+
+            self.log_message(
+                f"REMOVE_PROJECT: Projeto '{name_to_remove}' removido com sucesso das listas internas.",
+                level="INFO",
+            )
+
+            # Atualizar o status global para refletir a mudança
+            if (
+                hasattr(self, "global_status_label")
+                and self.global_status_label.winfo_exists()
+            ):
+                self.global_status_label.configure(
+                    text=f"Status Global: Projeto '{name_to_remove}' removido. {len(self.project_widgets)} projeto(s) restante(s)."
+                )
+
+            # Persistir a mudança imediatamente salvando os dados
+            self.log_message(
+                "REMOVE_PROJECT: Salvando dados após remoção do projeto...",
+                level="DEBUG",
+            )
+            self.save_app_data()
+        else:
+            self.log_message(
+                f"REMOVE_PROJECT: Projeto '{name_to_remove}' (Path: {normalized_path_to_remove}) não encontrado na lista de widgets para remoção.",
+                level="WARNING",
+            )
+
     def refresh_project_cleanup_items_ui(
         self, project_widget_info, successfully_deleted_relative_subfolder_paths
     ):

@@ -37,15 +37,6 @@
             "selected_cleanup_items": []
         },
         {
-            "path": "C:\\Users\\Factory Play\\Documents\\Unreal Projects\\NPCIA",
-            "name": "NPCIA",
-            "uproject_file": "NPCIA.uproject",
-            "monitor_auto": false,
-            "allow_clean": true,
-            "gb_limit": "",
-            "selected_cleanup_items": []
-        },
-        {
             "path": "C:\\Users\\Factory Play\\Documents\\Unreal Projects\\SpeedChaos",
             "name": "SpeedChaos",
             "uproject_file": "SpeedChaos.uproject",
@@ -60,6 +51,15 @@
             "path": "C:\\Users\\Factory Play\\OneDrive - bee1 aprendizado colaborativo\\Template",
             "name": "Template",
             "uproject_file": "Template5_4.uproject",
+            "monitor_auto": false,
+            "allow_clean": true,
+            "gb_limit": "",
+            "selected_cleanup_items": []
+        },
+        {
+            "path": "C:\\Users\\Factory Play\\Documents\\Unreal Projects\\NPCIA",
+            "name": "NPCIA",
+            "uproject_file": "NPCIA.uproject",
             "monitor_auto": false,
             "allow_clean": true,
             "gb_limit": "",
