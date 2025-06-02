@@ -1,128 +1,145 @@
 # Documentação: Limpador de Cache Unreal Engine
 
-**Versão:** 1.0 (Proposta)
-**Data:** 31 de Maio de 2025
+**Versão:** 1.1 (Proposta)
+**Data:** 02 de Junho de 2025
 
 ## 1. Introdução e Objetivo
 
-O **Limpador de Cache Unreal Engine** é uma ferramenta desenvolvida para auxiliar usuários da Unreal Engine a gerenciar e limpar arquivos de cache temporários e derivados que são gerados durante o desenvolvimento de projetos. Esses arquivos, localizados em pastas como `Intermediate`, `DerivedDataCache` e subpastas de `Saved`, podem ocupar um espaço considerável em disco com o tempo.
+O **Limpador de Cache Unreal Engine** é uma ferramenta desenvolvida para auxiliar usuários da Unreal Engine a gerenciar e limpar arquivos de cache temporários e derivados que são gerados durante o desenvolvimento de projetos. Esses arquivos, localizados em pastas como `Intermediate`, `DerivedDataCache` e diversas subpastas de `Saved`, podem ocupar um espaço considerável em disco com o tempo.
 
-O objetivo principal deste programa é fornecer uma maneira fácil, segura e parcialmente automatizada de liberar esse espaço, ajudando a manter o sistema organizado e otimizado.
+O objetivo principal deste programa é fornecer uma maneira fácil, segura e altamente configurável de liberar esse espaço, ajudando a manter o sistema organizado e otimizado, com opções de automação e controle granular.
 
 ## 2. Funcionalidades Principais
 
 O programa oferece um conjunto robusto de funcionalidades para gerenciar os caches dos seus projetos Unreal Engine:
 
 * **Descoberta de Projetos:**
-    * **Automática:** Ao iniciar, o programa pode escanear a pasta padrão de projetos da Unreal Engine (normalmente `Documentos\Unreal Projects`) para listar seus projetos.
+    * **Automática:** Ao iniciar, o programa escaneia a pasta padrão de projetos da Unreal Engine (normalmente `Documentos\Unreal Projects`) para listar projetos.
     * **Manual:** Permite que o usuário adicione manualmente projetos localizados em qualquer diretório do sistema.
+    * Botão para reescanear a pasta padrão, limpando a lista atual de projetos descobertos automaticamente e buscando novamente.
 * **Persistência de Dados:**
-    * A lista de projetos adicionados (automática e manualmente) e suas configurações individuais (limite de GB, permissões de limpeza, etc.) são salvas em um arquivo de configuração (`clean_unreal_config.json`).
-    * Esses dados são carregados automaticamente sempre que o programa é iniciado.
-* **Gerenciamento por Projeto:**
-    * **Nome e Caminho:** Exibe o nome e o caminho de cada projeto listado.
-    * **Status do Cache:** Um campo exibe informações sobre o cache do projeto (tamanho após análise, status da limpeza).
-    * **Monitorar Auto (Checkbox):** Define se o projeto será incluído nas verificações do monitoramento automático em segundo plano.
-    * **Permitir Limpeza (Checkbox):** Autoriza o programa a limpar o cache do projeto (seja pela ação global manual ou pelo monitoramento automático). Essencial para a segurança.
-    * **Limite GB (Auto) (Campo de Entrada):** Define o tamanho máximo (em Gigabytes) que o cache de um projeto pode atingir antes que o monitoramento automático tente limpá-lo (requer "Monitorar Auto" e "Permitir Limpeza" ativos).
+    * A lista de projetos (descobertos e manuais), suas configurações individuais (monitoramento, permissão de limpeza, limite de GB) e as seleções de pastas/subpastas para limpeza são salvas em um arquivo de configuração (`clean_unreal_config.json`).
+    * Configurações globais do aplicativo, como o intervalo de monitoramento e as preferências de inicialização, também são salvas.
+    * Todos os dados são carregados automaticamente quando o programa é iniciado.
+* **Gerenciamento Granular por Projeto:**
+    * **Listagem Detalhada:** Para cada projeto, exibe nome e caminho.
+    * **Controles Gerais do Projeto:**
+        * `Monitorar Auto` (Checkbox): Define se o projeto será incluído nas verificações do monitoramento automático.
+        * `Permitir Limpeza (Geral)` (Checkbox): Autorização principal para que qualquer limpeza (manual global ou automática) possa ocorrer neste projeto.
+        * `Limite GB (Auto)` (Campo de Entrada): Define o tamanho máximo (em Gigabytes) que o cache *dos itens selecionados para limpeza* pode atingir antes que o monitoramento automático tente limpá-lo.
+        * `Remover Projeto`: Botão para remover o projeto da lista do gerenciador.
+    * **Seleção Detalhada de Itens para Limpeza:**
+        * Para cada projeto, o usuário pode expandir seções para as pastas principais (`Intermediate`, `DerivedDataCache`, `Saved`).
+        * Um checkbox para cada pasta principal permite selecionar a limpeza de **arquivos soltos** diretamente dentro dela (ex: `Saved (arquivos soltos na raiz desta pasta)`).
+        * Subpastas diretas dentro de cada pasta principal são listadas dinamicamente, cada uma com seu próprio checkbox para seleção individual.
+        * Descrições são fornecidas para subpastas conhecidas, auxiliando o usuário na decisão.
+    * **Status do Cache:** Um campo exibe informações sobre o cache do projeto (ex: "Cache Total: X GB | Selecionado: Y MB") após a análise.
 * **Ações Globais na Interface:**
-    * **Analisar Todos os Projetos:** Calcula e exibe o tamanho atual do cache (pastas `Intermediate` e `DerivedDataCache`) para todos os projetos listados.
-    * **Limpar Projetos Permitidos:** Inicia a limpeza do cache para todos os projetos listados que têm a opção "Permitir Limpeza" marcada e que não estão atualmente abertos no editor da Unreal Engine.
+    * **Analisar Todos os Projetos:** Calcula e exibe dois valores para cada projeto listado:
+        1.  O tamanho total do cache "potencial" (definido atualmente como as pastas `Intermediate` e `DerivedDataCache` inteiras).
+        2.  O tamanho combinado dos itens (arquivos soltos de pastas principais e/ou subpastas) que estão *atualmente selecionados* pelo usuário para limpeza naquele projeto.
+    * **Limpar Projetos Permitidos:** Inicia a limpeza para todos os projetos listados que:
+        1.  Têm a opção "Permitir Limpeza (Geral)" marcada.
+        2.  Não estão atualmente abertos no editor da Unreal Engine.
+        3.  Têm pelo menos um item (pasta principal para arquivos soltos ou subpasta) selecionado para limpeza.
+        * A limpeza deleta os arquivos soltos e/ou subpastas explicitamente selecionados.
+        * **Regra Adicional:** Se uma subpasta dentro de `Saved`, `Intermediate`, ou `DerivedDataCache` é limpa, os arquivos soltos na raiz dessa respectiva pasta principal também são automaticamente limpos.
+        * Após a limpeza, a interface de seleção de subpastas para o projeto é atualizada para remover os itens que foram efetivamente deletados do disco.
 * **Monitoramento Automático em Segundo Plano:**
-    * **Ativação:** Pode ser configurado para iniciar automaticamente quando o programa é aberto através da opção "Ativar monitoramento automático ao iniciar o programa".
-    * **Verificação Periódica:** Verifica os projetos configurados em intervalos definidos pelo usuário.
-    * **Lógica de Limpeza Automática:** Se um projeto estiver com "Monitorar Auto" e "Permitir Limpeza" ativos, não estiver aberto no editor, e seu cache (`Intermediate` + `DerivedDataCache`) exceder o "Limite GB" definido, a limpeza será executada automaticamente.
-    * **Intervalo Configurável:** O usuário pode definir o intervalo (em segundos) entre os ciclos de verificação do monitoramento automático. Este valor é salvo.
+    * **Ativação Configurável:** Uma opção "Ativar monitoramento automático ao iniciar o programa" permite que o monitoramento comece automaticamente quando o aplicativo é aberto.
+    * **Controle Manual (UI e Bandeja):** Botões "Iniciar Monitoramento" e "Parar Monitoramento" na interface principal, e uma opção "Alternar Monitoramento" no menu da bandeja, permitem ligar/desligar o ciclo de monitoramento durante a sessão.
+    * **Verificação Periódica:** Verifica os projetos configurados em intervalos definidos pelo usuário (em minutos).
+    * **Lógica de Limpeza Automática:** Para cada projeto com "Monitorar Auto" e "Permitir Limpeza (Geral)" ativos, e que não esteja aberto no editor:
+        1.  Calcula o tamanho do cache dos *itens selecionados* para limpeza.
+        2.  Se este tamanho exceder o "Limite GB" definido para o projeto, a limpeza desses itens selecionados (e os arquivos soltos correspondentes, conforme a regra) é executada.
+        3.  A interface de seleção é atualizada após a limpeza.
+    * **Intervalo Configurável:** O usuário define o intervalo em minutos, que é salvo e carregado.
 * **Interface Gráfica com Abas:**
-    * **Aba "Gerenciador":** Contém todos os controles para listar, configurar projetos, e executar ações globais.
-    * **Aba "Logs":** Exibe um histórico de ações realizadas pelo programa, mensagens de status, erros e informações de depuração.
+    * **Aba "Gerenciador":** Contém todos os controles para listar e configurar projetos, executar ações globais e configurar o monitoramento.
+    * **Aba "Logs":** Exibe um histórico detalhado das ações realizadas pelo programa, status, erros e informações de depuração, com timestamps.
 * **Integração com a Bandeja do Sistema (System Tray):**
-    * **Minimizar para Bandeja:** Ao clicar no botão "X" para fechar a janela principal, o programa é minimizado para a bandeja do sistema, continuando a rodar em segundo plano.
-    * **Ícone Personalizado:** Exibe um ícone do programa na bandeja.
+    * **Minimizar para Bandeja:** Ao clicar no botão "X", a janela principal é minimizada para a bandeja, e o programa continua ativo.
+    * **Ícone Personalizado:** Exibe o ícone do programa na bandeja.
     * **Menu de Contexto na Bandeja:**
-        * `Abrir Limpador`: Restaura e exibe a janela principal do programa.
-        * `Alternar Monitoramento`: Permite iniciar ou parar manualmente o ciclo de monitoramento automático durante a sessão atual.
-        * `Fechar Limpador`: Encerra completamente o programa (salvando as configurações antes).
-    * **Duplo Clique no Ícone:** Abre a janela principal do programa.
+        * `Abrir Limpador`: Restaura a janela principal.
+        * `Monitoramento > Alternar Monitoramento`: Liga ou desliga o monitoramento automático.
+        * `Monitoramento > Status: [Ativo/Parado]`: Exibe o estado atual do monitoramento.
+        * `Fechar Limpador`: Salva as configurações e encerra o programa completamente.
+    * **Duplo Clique no Ícone:** Abre/restaura a janela principal.
 * **Inicialização com o Windows:**
-    * Possui uma opção na interface ("Iniciar com o Windows") que, quando marcada, configura o programa para ser executado automaticamente na inicialização do sistema operacional.
+    * Opção "Iniciar com o Windows" na interface que configura o programa para ser executado automaticamente na inicialização do sistema (via Registro do Windows).
 
 ## 3. Como Usar o Programa
 
-1.  **Primeira Execução e Adição de Projetos:**
-    * Ao iniciar pela primeira vez, o programa tentará carregar projetos de um arquivo de configuração. Em seguida, ele fará uma varredura na pasta padrão (`Documentos\Unreal Projects`).
-    * Use o botão "**Adicionar Projeto Manualmente**" para incluir projetos que estejam em outros locais.
-    * O botão "**Escanear Pasta Padrão Novamente**" permite limpar a lista atual e buscar novamente na pasta padrão.
+1.  **Instalação e Primeira Execução:**
+    * Execute o arquivo `LimpadorUnreal.exe`.
+    * Na primeira execução, nenhum projeto estará configurado. O programa tentará escanear a pasta padrão `Documentos\Unreal Projects`.
+    * Use o botão "**Adicionar Projeto Manualmente**" para incluir projetos de outros locais.
+    * O botão "**Escanear Pasta Padrão Novamente**" limpa a lista de projetos descobertos automaticamente e reescaneia a pasta padrão (não afeta projetos adicionados manualmente, a menos que eles também estejam na pasta padrão e sejam re-descobertos).
 
-3.  **Configurando Cada Projeto:**
-    * Para cada projeto listado na aba "Gerenciador":
-        * **Monitorar Auto:** Marque esta caixa se você deseja que o monitoramento automático em segundo plano verifique este projeto.
-        * **Permitir Limpeza:** Marque esta caixa para dar permissão ao programa para limpar o cache deste projeto.
-        * **Limite GB (Auto):** Se "Monitorar Auto" estiver ativo, defina aqui o tamanho máximo em GB que o cache pode atingir antes que a limpeza automática seja acionada.
+2.  **Configurando Cada Projeto (Aba "Gerenciador"):**
+    * Para cada projeto listado:
+        * **Monitorar Auto:** Marque para incluir nas verificações do monitoramento automático.
+        * **Permitir Limpeza (Geral):** Autorização principal para qualquer tipo de limpeza (manual ou automática) neste projeto.
+        * **Limite GB (Auto):** Se "Monitorar Auto" estiver ativo, defina o tamanho máximo em GB para o *cache dos itens selecionados abaixo* antes da limpeza automática.
+        * Clique no botão "**Mostrar Subpastas de [Saved/Intermediate/DerivedDataCache] ▼**" para expandir a lista de itens limpáveis para aquela categoria.
+        * Marque os checkboxes das **pastas principais** (ex: `[ ] Saved (arquivos soltos...)`) se desejar limpar os arquivos que estão diretamente na raiz daquela pasta.
+        * Marque os checkboxes das **subpastas específicas** (ex: `[ ] Saved\Logs`) que você deseja incluir na limpeza.
+        * Use o botão "**Remover Projeto**" para tirar um projeto da lista.
 
-4.  **Ações Manuais Globais:**
-    * Clique em "**Analisar Todos os Projetos**" para calcular e exibir o tamanho atual das pastas de cache de cada projeto.
-    * Clique em "**Limpar Projetos Permitidos**" para executar a limpeza do cache dos projetos que estiverem com "Permitir Limpeza" marcado e fechados no editor.
+3.  **Ações Manuais Globais (Aba "Gerenciador"):**
+    * Clique em "**Analisar Todos os Projetos**" para ver o "Cache Total Potencial" (Intermediate + DDC) e o tamanho do "Cache Selecionado" para cada projeto.
+    * Clique em "**Limpar Projetos Permitidos**" para limpar os itens selecionados nos projetos que têm "Permitir Limpeza (Geral)" marcado e estão fechados no editor. Após a limpeza, as subpastas deletadas sumirão da lista de seleção.
 
-5.  **Monitoramento Automático:**
-    * Na seção "Configurações de Monitoramento":
-        * Marque "**Ativar monitoramento automático ao iniciar o programa**" para que o monitoramento em segundo plano comece com o aplicativo.
-        * Defina o "**Intervalo (segundos):**" para a frequência das verificações.
-    * O status do monitoramento será exibido.
+4.  **Monitoramento Automático (Aba "Gerenciador"):**
+    * Marque "**Ativar monitoramento automático ao iniciar o programa**" para que o monitoramento comece quando o aplicativo for aberto.
+    * Defina o "**Intervalo (minutos):**" para a frequência das verificações.
+    * Use os botões "**Iniciar Monitoramento**" e "**Parar Monitoramento**" para controlar o ciclo manualmente durante a sessão.
+    * O status do monitoramento ("Ativo", "Parando...", "Parado", "Verificando...") será exibido.
 
-6.  **Usando a Bandeja do Sistema:**
-    * Ao clicar no "X" da janela principal, ela será minimizada para a bandeja.
+5.  **Usando a Bandeja do Sistema:**
+    * Fechar a janela principal (botão "X") minimiza o programa para a bandeja.
     * **Duplo clique** no ícone da bandeja restaura a janela.
-    * **Clique com o botão direito** no ícone para: `Abrir Limpador`, `Alternar Monitoramento` ou `Fechar Limpador`.
+    * **Clique com o botão direito** no ícone para: `Abrir Limpador`, `Alternar Monitoramento` ou `Fechar Limpador` (que encerra o programa de vez).
 
-7.  **Visualizando Logs:**
-    * Acesse a aba "**Logs**" para ver um histórico das ações do programa.
+6.  **Visualizando Logs (Aba "Logs"):**
+    * Acompanhe todas as ações importantes, status e erros do programa nesta aba.
 
-8.  **Iniciando com o Windows:**
-    * Marque a opção "**Iniciar com o Windows**" para que o programa seja executado automaticamente ao ligar o PC.
+7.  **Iniciando com o Windows (Aba "Gerenciador"):**
+    * Marque a opção "**Iniciar com o Windows**" para configurar o início automático. Desmarcar remove a configuração.
 
 ## 4. Arquivo de Configuração (`clean_unreal_config.json`)
 
-O programa salva suas configurações e a lista de projetos em um arquivo chamado `clean_unreal_config.json`, localizado na mesma pasta do executável. Este arquivo armazena:
+Localizado na mesma pasta do executável, salva:
+* **Configurações Globais:** `auto_start_monitoring_on_launch`, `monitoring_interval_seconds`, `start_with_windows`.
+* **Lista de Projetos:** Para cada um: `path`, `name`, `uproject_file`, `monitor_auto`, `allow_clean`, `gb_limit`, e `selected_cleanup_items` (lista dos identificadores das pastas principais e caminhos relativos das subpastas selecionadas para limpeza).
 
-* **Configurações Globais:**
-    * `auto_start_monitoring_on_launch`: Se o monitoramento automático deve iniciar com o programa.
-    * `monitoring_interval_seconds`: O intervalo de verificação do monitoramento.
-    * (Se implementado) `start_with_windows`: Se o programa está configurado para iniciar com o Windows.
-* **Lista de Projetos:** Para cada projeto:
-    * `path`: O caminho completo para a pasta do projeto.
-    * `name`: O nome do projeto.
-    * `uproject_file`: O nome do arquivo `.uproject`.
-    * `monitor_auto`: Estado do checkbox "Monitorar Auto".
-    * `allow_clean`: Estado do checkbox "Permitir Limpeza".
-    * `gb_limit`: O valor definido no campo "Limite GB (Auto)".
+## 5. Pastas de Cache Alvo para Limpeza Granular
 
-## 5. Pastas de Cache Alvo
+O usuário seleciona quais dos seguintes itens deseja limpar para cada projeto:
+* Arquivos soltos diretamente dentro de `Intermediate`.
+* Subpastas de `Intermediate` (ex: `Build`, `ProjectFiles`).
+* Arquivos soltos diretamente dentro de `DerivedDataCache`.
+* Subpastas de `DerivedDataCache` (ex: `VT`).
+* Arquivos soltos diretamente dentro de `Saved`.
+* Subpastas de `Saved` (ex: `Logs`, `Crashes`, `Autosaves`).
 
-Por padrão, o programa foca na limpeza das seguintes pastas dentro de cada projeto Unreal:
-
-* `Intermediate`
-* `DerivedDataCache`
-
-*(Nota: A limpeza de subpastas específicas de `Saved` como `Logs` e `Crashes` pode ser considerada para futuras versões, mas com cautela para não afetar configurações ou saves importantes.)*
+**A limpeza de arquivos soltos em uma pasta principal (`Saved`, `Intermediate`, `DerivedDataCache`) ocorre se o checkbox da pasta principal estiver marcado OU se alguma subpasta dentro dela for selecionada e limpa.**
 
 ## 6. Considerações Importantes e Avisos
 
-* **Segurança Primeiro:** O programa inclui uma verificação para tentar determinar se um projeto Unreal está aberto antes de limpá-lo. No entanto, é sempre uma boa prática salvar seu trabalho e fechar a Unreal Engine antes de realizar limpezas de cache.
-* **Permissão de Limpeza:** Nenhum cache de projeto será limpo a menos que o respectivo checkbox "Permitir Limpeza" esteja marcado.
-* **Reconstrução de Cache:** Após a limpeza, a Unreal Engine precisará recriar esses arquivos na próxima vez que o projeto for aberto, o que pode levar algum tempo.
-* **Backup:** Ter um sistema de backup regular para seus projetos importantes é sempre recomendado.
+* **Segurança:** O programa verifica se um projeto está aberto antes de limpá-lo. Feche a Unreal Engine antes de limpezas manuais extensas.
+* **Permissão de Limpeza (Geral):** É a chave mestra para qualquer limpeza em um projeto.
+* **Reconstrução de Cache:** A Unreal Engine recriará os caches limpos, o que pode levar tempo ao abrir o projeto.
+* **Backup de Projetos:** Mantenha backups dos seus projetos importantes.
+* **Pastas Críticas:** Tenha extremo cuidado ao considerar limpar itens dentro de `Saved/Config` ou `Saved/SaveGames`. O programa permite selecionar subpastas, mas a responsabilidade da seleção é do usuário. Por padrão, estas não são recomendadas para limpeza automática.
 
 ## 7. Como Compilar (Usando PyInstaller)
 
-Se você estiver trabalhando com o código fonte:
-
 1.  Instale as dependências (Python, customtkinter, pystray, Pillow, psutil).
-2.  Coloque um ícone chamado `CleanUnreal.ico` na pasta raiz do projeto.
-3.  Use o seguinte comando no terminal, dentro da pasta do projeto:
+2.  Tenha um ícone `CleanUnreal.ico` na pasta raiz do projeto.
+3.  Use o comando no terminal, na pasta do projeto:
     ```bash
     python -m PyInstaller --name LimpadorUnreal --noconsole --onefile --icon=CleanUnreal.ico --add-data "CleanUnreal.ico:." app.py
     ```
 4.  O executável estará em `dist/LimpadorUnreal/LimpadorUnreal.exe`.
-
----
