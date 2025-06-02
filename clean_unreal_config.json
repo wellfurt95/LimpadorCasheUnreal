@@ -5,59 +5,70 @@
             "name": "CombatZone",
             "uproject_file": "CombatZone.uproject",
             "monitor_auto": false,
-            "allow_clean": false,
-            "gb_limit": ""
+            "allow_clean": true,
+            "gb_limit": "",
+            "selected_cleanup_items": []
         },
         {
             "path": "C:\\Users\\Factory Play\\Documents\\Unreal Projects\\CursoDviz",
             "name": "CursoDviz",
             "uproject_file": "CursoDviz.uproject",
             "monitor_auto": false,
-            "allow_clean": false,
-            "gb_limit": ""
+            "allow_clean": true,
+            "gb_limit": "",
+            "selected_cleanup_items": []
         },
         {
             "path": "C:\\Users\\Factory Play\\Documents\\Unreal Projects\\GameAnimationSample",
             "name": "GameAnimationSample",
             "uproject_file": "GameAnimationSample.uproject",
             "monitor_auto": false,
-            "allow_clean": false,
-            "gb_limit": ""
+            "allow_clean": true,
+            "gb_limit": "",
+            "selected_cleanup_items": []
         },
         {
             "path": "C:\\Users\\Factory Play\\Documents\\Unreal Projects\\Modelos3D",
             "name": "Modelos3D",
             "uproject_file": "Modelos3D.uproject",
             "monitor_auto": false,
-            "allow_clean": false,
-            "gb_limit": ""
+            "allow_clean": true,
+            "gb_limit": "",
+            "selected_cleanup_items": []
         },
         {
             "path": "C:\\Users\\Factory Play\\Documents\\Unreal Projects\\NPCIA",
             "name": "NPCIA",
             "uproject_file": "NPCIA.uproject",
             "monitor_auto": false,
-            "allow_clean": false,
-            "gb_limit": ""
+            "allow_clean": true,
+            "gb_limit": "",
+            "selected_cleanup_items": []
         },
         {
             "path": "C:\\Users\\Factory Play\\Documents\\Unreal Projects\\SpeedChaos",
             "name": "SpeedChaos",
             "uproject_file": "SpeedChaos.uproject",
             "monitor_auto": false,
-            "allow_clean": false,
-            "gb_limit": ""
+            "allow_clean": true,
+            "gb_limit": "",
+            "selected_cleanup_items": [
+                "Intermediate"
+            ]
         },
         {
             "path": "C:\\Users\\Factory Play\\OneDrive - bee1 aprendizado colaborativo\\Template",
             "name": "Template",
             "uproject_file": "Template5_4.uproject",
-            "monitor_auto": true,
+            "monitor_auto": false,
             "allow_clean": true,
-            "gb_limit": "1"
+            "gb_limit": "",
+            "selected_cleanup_items": []
         }
     ],
     "settings": {
-        "auto_start_monitoring_on_launch": false
+        "start_with_windows": true,
+        "auto_start_monitoring_on_launch": true,
+        "monitoring_interval_seconds": "1"
     }
 }
